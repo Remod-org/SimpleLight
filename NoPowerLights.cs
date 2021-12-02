@@ -2,9 +2,9 @@ using Oxide.Core;
 
 namespace Oxide.Plugins
 {
-    [Info("SimpleLight", "RFC1920", "1.0.3")]
+    [Info("NoPowerLights", "RFC1920", "1.0.3")]
     [Description("Make SimpleLight and Ceiling light not require power")]
-    internal class SimpleLight : RustPlugin
+    internal class NoPowerLights : RustPlugin
     {
         private ConfigData configData;
 
@@ -15,7 +15,7 @@ namespace Oxide.Plugins
 
         private void OnEntitySpawned(IOEntity light)
         {
-            switch (light.GetType().ToString())
+            switch (light?.GetType().ToString().ToLower())
             {
                 case "ceilinglight":
                     if (configData.doCeilingLight)
