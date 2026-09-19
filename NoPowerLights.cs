@@ -1,20 +1,26 @@
 using Oxide.Core;
+using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("NoPowerLights", "RFC1920", "1.0.4")]
+    [Info("NoPowerLights", "RFC1920", "1.0.5")]
     [Description("Make SimpleLight and Ceiling light not require power")]
     internal class NoPowerLights : RustPlugin
     {
         private ConfigData configData;
+        private bool enabled;
 
         private void OnServerInitialized()
         {
             LoadConfigVariables();
+            enabled = true;
         }
 
         private void OnEntitySpawned(IOEntity light)
         {
+            if (!enabled) return;
+            if (light == null) return;
+
             object success = Interface.CallHook("OnNoPowerLightsToggle", light);
             if (success == null)
             {
@@ -23,13 +29,15 @@ namespace Oxide.Plugins
                     case "ceilinglight":
                         if (configData.doCeilingLight)
                         {
-                            light.SetFlag(BaseEntity.Flags.On, true, false, true);
+                            //light.SetFlag(BaseEntity.Flags.On, true, false, true);
+                            light.SetFlagLocal(BaseEntity.Flags.On, true, true);
                         }
                         break;
                     case "simplelight":
                         if (configData.doSimpleLight)
                         {
-                            light.SetFlag(BaseEntity.Flags.On, true, false, true);
+                            //light.SetFlag(BaseEntity.Flags.On, true, false, true);
+                            light.SetFlagLocal(BaseEntity.Flags.On, true, true);
                         }
                         break;
                 }
